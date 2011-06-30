@@ -251,7 +251,7 @@ msg_tag_errno()
 }
 
 MessageTag *
-msg_tag_dump(const gchar *tag, const gpointer data, gsize len)
+msg_tag_dump(const gchar *tag, const void *data, gsize len)
 {
   MessageTag *res;
   GString *str = g_string_sized_new(len * 3);

@@ -82,7 +82,7 @@ clist_destroy(CList *self, CListDataDestroyCb destroy)
 }
 
 CList *
-clist_append(CList *self, gpointer data)
+clist_append(CList *self, void *data)
 {
   CList *new_item = g_slice_new0(CList);
 
@@ -102,7 +102,7 @@ clist_append(CList *self, gpointer data)
 }
 
 CList *
-clist_prepend(CList *self, gpointer data)
+clist_prepend(CList *self, void *data)
 {
   CList *nlist = clist_append(self, data);
   return nlist->m_prev;
@@ -136,7 +136,7 @@ clist_remove(CList *self, CListDataDestroyCb destroy)
 }
 
 gboolean
-clist_foreach(CList *self, CListForeachCb list_cb, gpointer user_data)
+clist_foreach(CList *self, CListForeachCb list_cb, void *user_data)
 {
   CList *act;
 
@@ -186,7 +186,7 @@ clist_iter_prev(CListIterator *iter)
   return _clist_iter_set_step(iter, iter->m_act ? iter->m_act->m_prev : NULL);
 }
 
-gpointer
+void *
 clist_iter_data(CListIterator *iter)
 {
   g_assert (iter->m_act);

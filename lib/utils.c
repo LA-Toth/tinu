@@ -53,10 +53,10 @@ _align(gsize size)
   return (size / pg + 1) * pg;
 }
 
-gpointer 
+void *
 __allocate(gsize size)
 {
-  gpointer ptr;
+  void *ptr;
 
   t_raw_assert(size > 0);
   ptr = g_try_malloc0(size);
@@ -64,10 +64,10 @@ __allocate(gsize size)
   return ptr;
 }
 
-gpointer 
-__reallocate(gpointer ptr, gsize size)
+void *
+__reallocate(void *ptr, gsize size)
 {
-  gpointer res;
+  void *res;
   if (size == 0)
     {
       __free(ptr);
@@ -80,7 +80,7 @@ __reallocate(gpointer ptr, gsize size)
 }
 
 void
-__free(gpointer ptr)
+__free(void *ptr)
 {
   if (ptr)
     g_free(ptr);

@@ -43,7 +43,7 @@ _stat_time()
 }
 
 static gboolean
-_stat_message_counter(Message *msg, gpointer user_data)
+_stat_message_counter(Message *msg, void *user_data)
 {
   TestStatistics *self = (TestStatistics *)user_data;
   self->m_messages[msg->m_priority]++;
@@ -51,7 +51,7 @@ _stat_message_counter(Message *msg, gpointer user_data)
 }
 
 static void
-_stat_hook_assert(TestHookID hook_id, TestContext *context, gpointer user_data, va_list vl)
+_stat_hook_assert(TestHookID hook_id, TestContext *context, void *user_data, va_list vl)
 {
   TestStatistics *self = (TestStatistics *)user_data;
   if (va_arg(vl, gboolean))
@@ -64,7 +64,7 @@ _stat_hook_assert(TestHookID hook_id, TestContext *context, gpointer user_data, 
 }
 
 static void
-_stat_hook_case_begin(TestHookID hook_id, TestContext *context, gpointer user_data, va_list vl)
+_stat_hook_case_begin(TestHookID hook_id, TestContext *context, void *user_data, va_list vl)
 {
   TestStatistics *self = (TestStatistics *)user_data;
   StatTestInfo test_info;
@@ -80,7 +80,7 @@ _stat_hook_case_begin(TestHookID hook_id, TestContext *context, gpointer user_da
 }
 
 static void
-_stat_hook_case_end(TestHookID hook_id, TestContext *context, gpointer user_data, va_list vl)
+_stat_hook_case_end(TestHookID hook_id, TestContext *context, void *user_data, va_list vl)
 {
   TestStatistics *self = (TestStatistics *)user_data;
 
@@ -119,7 +119,7 @@ _stat_hook_case_end(TestHookID hook_id, TestContext *context, gpointer user_data
 }
 
 static void
-_stat_hook_suite_begin(TestHookID hook_id, TestContext *context, gpointer user_data, va_list vl)
+_stat_hook_suite_begin(TestHookID hook_id, TestContext *context, void *user_data, va_list vl)
 {
   TestStatistics *self = (TestStatistics *)user_data;
   StatSuiteInfo suite_info;
@@ -136,7 +136,7 @@ _stat_hook_suite_begin(TestHookID hook_id, TestContext *context, gpointer user_d
 }
 
 static void
-_stat_hook_suite_end(TestHookID hook_id, TestContext *context, gpointer user_data, va_list vl)
+_stat_hook_suite_end(TestHookID hook_id, TestContext *context, void *user_data, va_list vl)
 {
   TestStatistics *self = (TestStatistics *)user_data;
 
@@ -192,13 +192,13 @@ void
 stat_start(TestStatistics *self)
 {
   self->m_log_handle = log_register_message_handler(_stat_message_counter, LOG_DEBUG, self);
-  test_register_multiple_hooks(self->m_context, g_stat_hooks, (gpointer)self);
+  test_register_multiple_hooks(self->m_context, g_stat_hooks, (void *)self);
 }
 
 void
 stat_stop(TestStatistics *self)
 {
-  test_unregister_multiple_hooks(self->m_context, g_stat_hooks, (gpointer)self);
+  test_unregister_multiple_hooks(self->m_context, g_stat_hooks, (void *)self);
 
   if (self->m_log_handle)
     {

@@ -63,7 +63,7 @@ typedef struct _LeakInfo
 {
   gboolean        m_enabled;
   GHashTable     *m_leaks;
-  gpointer        m_watch_handle;
+  void           *m_watch_handle;
 } LeakInfo;
 
 typedef struct _TestSimplifiedFunctions
@@ -156,7 +156,7 @@ _signal_off()
 void
 _test_case_run_intern(TestContext *self, TestCase *test)
 {
-  gpointer ctx = NULL;
+  void *ctx = NULL;
 
   g_test_case_current = test;
   _test_run_hooks(TEST_HOOK_BEFORE_TEST, test);
@@ -178,9 +178,9 @@ TestCaseResult
 _test_case_run_single_test(TestContext *self, TestCase *test)
 {
   GHashTable *leak_table = NULL;
-  gpointer leak_handler = (self->m_leakwatch ? tinu_leakwatch_simple(&leak_table) : NULL);
+  void *leak_handler = (self->m_leakwatch ? tinu_leakwatch_simple(&leak_table) : NULL);
 
-  gpointer stack = g_malloc0(TEST_CTX_STACK_SIZE);
+  void *stack = g_malloc0(TEST_CTX_STACK_SIZE);
 
   ucontext_t main_ctx;
 
@@ -335,7 +335,7 @@ _test_lookup_case(TestSuite *suite, const gchar *test)
   return NULL;
 }
 
-static gpointer
+static void *
 _test_setup_wrapper(TestCase *self)
 {
   TestSimplifiedFunctions *func = (TestSimplifiedFunctions *)self->m_user_data;
@@ -343,7 +343,7 @@ _test_setup_wrapper(TestCase *self)
 }
 
 static void
-_test_cleanup_wrapper(TestCase *self, gpointer context)
+_test_cleanup_wrapper(TestCase *self, void *context)
 {
   TestSimplifiedFunctions *func = (TestSimplifiedFunctions *)self->m_user_data;
   if (func->m_cleanup)
@@ -351,7 +351,7 @@ _test_cleanup_wrapper(TestCase *self, gpointer context)
 }
 
 static void
-_test_func_wrapper(TestCase *self, gpointer context)
+_test_func_wrapper(TestCase *self, void *context)
 {
   TestSimplifiedFunctions *func = (TestSimplifiedFunctions *)self->m_user_data;
   if (func->m_function)
@@ -431,7 +431,7 @@ test_add_extended(TestContext *self,
                   TestSetup setup,
                   TestCleanup cleanup,
                   TestFunction func,
-                  gpointer user_data,
+                  void *user_data,
                   CleanupFunction user_data_cleanup)
 {
   TestSuite *suite;
@@ -483,7 +483,7 @@ test_add_extended(TestContext *self,
 }
 
 void
-test_register_hook(TestContext *self, TestHookID hook_id, TestHookCb hook, gpointer user_data)
+test_register_hook(TestContext *self, TestHookID hook_id, TestHookCb hook, void *user_data)
 {
   gint i;
   TestHookEntry *entry;
@@ -505,7 +505,7 @@ test_register_hook(TestContext *self, TestHookID hook_id, TestHookCb hook, gpoin
 }
 
 void
-test_register_multiple_hooks(TestContext *self, TestHookCb *hooks, gpointer user_data)
+test_register_multiple_hooks(TestContext *self, TestHookCb *hooks, void *user_data)
 {
   gint id;
 
@@ -517,7 +517,7 @@ test_register_multiple_hooks(TestContext *self, TestHookCb *hooks, gpointer user
 }
 
 void
-test_unregister_hook(TestContext *self, TestHookID hook_id, TestHookCb hook, gpointer user_data)
+test_unregister_hook(TestContext *self, TestHookID hook_id, TestHookCb hook, void *user_data)
 {
   CListIterator *iter;
   TestHookEntry *entry;
@@ -550,7 +550,7 @@ test_unregister_hook(TestContext *self, TestHookID hook_id, TestHookCb hook, gpo
 }
 
 void
-test_unregister_multiple_hooks(TestContext *self, TestHookCb *hooks, gpointer user_data)
+test_unregister_multiple_hooks(TestContext *self, TestHookCb *hooks, void *user_data)
 {
   gint id;
 

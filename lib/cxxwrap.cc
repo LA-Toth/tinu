@@ -100,9 +100,9 @@ CxxBacktrace::at(unsigned int i) const
 
 void
 cxx_leakwatch_callback(LeakwatchOperation operation,
-                       gpointer oldptr, gpointer ptr, gsize size,
+                       void *oldptr, void *ptr, gsize size,
                        Backtrace *trace,
-                       gpointer user_data)
+                       void *user_data)
 {
   CxxLeakwatch *self = (CxxLeakwatch *)user_data;
   CxxBacktrace cxxtrace(trace);
@@ -176,7 +176,7 @@ CxxMessage::remove_tag(const gchar *tag)
 /* MessageHandler */
 
 gboolean
-cxx_log_callback(Message *msg, gpointer user_data)
+cxx_log_callback(Message *msg, void *user_data)
 {
   CxxMessage cxxmsg(msg);
   CxxMessageHandler *handler = (CxxMessageHandler *)user_data;

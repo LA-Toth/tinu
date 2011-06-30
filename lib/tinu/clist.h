@@ -60,7 +60,7 @@ __BEGIN_DECLS
 typedef struct _CList
 {
   /** List data, has to be freed by the user */
-  gpointer            m_data;
+  void               *m_data;
 
   /** Next item in list */
   struct _CList      *m_next;
@@ -80,7 +80,7 @@ typedef struct _CList
  *
  * for (iter = clist_iter_new(list); clist_iter_next(iter); )
  *   {
- *     gpointer data = clist_iter_data(iter);
+ *     void *data = clist_iter_data(iter);
  *     // actual code
  *   }
  * clist_iter_done(iter);
@@ -100,14 +100,14 @@ typedef struct _CListIterator CListIterator;
  * This callback is called with the list data and a custom user data for
  * each item in the list
  */
-typedef gboolean (*CListForeachCb)(gpointer data, gpointer user_data);
+typedef gboolean (*CListForeachCb)(void *data, void *user_data);
 /** @brief Callback for destroying the list data
  * @param data Data in list entry.
  *
  * This called is called when the list is being destroyed to free the
  * list data.
  */
-typedef void (CListDataDestroyCb)(gpointer data);
+typedef void (CListDataDestroyCb)(void *data);
 
 /** @brief Destroy the list
  * @param self Arbitary item in the list. May be NULL, then this does nothing.
@@ -127,7 +127,7 @@ void clist_destroy(CList *self, CListDataDestroyCb destroy);
  * list is created with one item). In this context, end means before self,
  * so when iterating through the list this item will appear as the last one.
  */
-CList *clist_append(CList *self, gpointer data);
+CList *clist_append(CList *self, void *data);
 
 /** @brief Prepend data to the list
  * @param self Arbitary item in the list. May be NULL.
@@ -138,7 +138,7 @@ CList *clist_append(CList *self, gpointer data);
  * list is created with one item). In this context, beginning means after self,
  * so when iterating through the list this item will appear as the first one.
  */
-CList *clist_prepend(CList *self, gpointer data);
+CList *clist_prepend(CList *self, void *data);
 
 /** @brief Remove item from the list
  * @param self Arbitary item in the list. May be NULL, then this does nothing.
@@ -156,7 +156,7 @@ CList *clist_remove(CList *self, CListDataDestroyCb destroy);
  * @param user_data User data to pass to list_cb
  * @return TRUE if the list iterated through each item.
  */
-gboolean clist_foreach(CList *self, CListForeachCb list_cb, gpointer user_data);
+gboolean clist_foreach(CList *self, CListForeachCb list_cb, void *user_data);
 
 /** @brief Create an iterator
  * @param list List to iterate through.
@@ -198,7 +198,7 @@ gboolean clist_iter_prev(CListIterator *iter);
  * @note This call fails with an assertion if the iterator is invalid
  * or clist_iter_next or clist_iter_prev was not called prior to the call.
  */
-gpointer clist_iter_data(CListIterator *iter);
+void *clist_iter_data(CListIterator *iter);
 /** @brief Remove item at iterator
  * @param iter Iterator
  * @param destroy Destroy callback (like in clist_remove)

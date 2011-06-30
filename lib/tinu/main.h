@@ -91,7 +91,7 @@ void tinu_test_add_extended(const gchar *suite_name,
                             TestSetup setup,
                             TestCleanup cleanup,
                             TestFunction func,
-                            gpointer user_data,
+                            void *user_data,
                             CleanupFunction user_data_cleanup);
 
 /** @brief Add a reporting facility to the framework

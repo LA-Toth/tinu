@@ -99,7 +99,7 @@ _tinu_signal_handler(int signo)
 
 gboolean
 _tinu_opt_priority(const gchar *opt G_GNUC_UNUSED, const gchar *value,
-  gpointer data, GError **error)
+  void *data, GError **error)
 {
   gint priority = msg_get_priority_value(value);
   gchar *endl;
@@ -124,7 +124,7 @@ _tinu_opt_priority(const gchar *opt G_GNUC_UNUSED, const gchar *value,
 
 gboolean
 _tinu_opt_stat_verb(const gchar *opt G_GNUC_UNUSED, const gchar *value,
-  gpointer data, GError **error)
+  void *data, GError **error)
 {
   NameTableKey key = tinu_lookup_name(StatisticsVerbosity_names, value, -1, -1);
   gchar *endl;
@@ -149,45 +149,45 @@ _tinu_opt_stat_verb(const gchar *opt G_GNUC_UNUSED, const gchar *value,
 
 gboolean
 _tinu_opt_report_null(const gchar *opt G_GNUC_UNUSED, const gchar *value G_GNUC_UNUSED,
-  gpointer data, GError **error)
+  void *data, GError **error)
 {
   g_opt_report = NULL;
   return TRUE;
 }
 
 static GOptionEntry g_main_opt_entries[] = {
-  { "fancy-log", 'c', 0, G_OPTION_ARG_NONE, (gpointer)&g_opt_fancy,
+  { "fancy-log", 'c', 0, G_OPTION_ARG_NONE, (void *)&g_opt_fancy,
     "Colourful logging to stderr", NULL },
-  { "silent", 's', 0, G_OPTION_ARG_NONE, (gpointer)&g_opt_silent,
+  { "silent", 's', 0, G_OPTION_ARG_NONE, (void *)&g_opt_silent,
     "Do not log to stderr", NULL },
-  { "syslog", 'S', 0, G_OPTION_ARG_NONE, (gpointer)&g_opt_syslog,
+  { "syslog", 'S', 0, G_OPTION_ARG_NONE, (void *)&g_opt_syslog,
     "Log using standard syslog functions (with the 'user' facility", NULL },
-  { "file", 'f', 0, G_OPTION_ARG_STRING, (gpointer)&g_opt_file,
+  { "file", 'f', 0, G_OPTION_ARG_STRING, (void *)&g_opt_file,
     "Log into a file", NULL },
-  { "log-level", 'v', 0, G_OPTION_ARG_CALLBACK, (gpointer)&_tinu_opt_priority,
+  { "log-level", 'v', 0, G_OPTION_ARG_CALLBACK, (void *)&_tinu_opt_priority,
     "Set log priority (emergency, alert, critical, error, warning, notice, info, debug)",
     "level" },
-  { "results", 'R', 0, G_OPTION_ARG_CALLBACK, (gpointer)&_tinu_opt_stat_verb,
+  { "results", 'R', 0, G_OPTION_ARG_CALLBACK, (void *)&_tinu_opt_stat_verb,
     "Set statistics verbosity (none, summary (default), suites, full, verbose or 0 - 7)",
     "verbosity" },
-  { "leakwatch", 0, 0, G_OPTION_ARG_NONE, (gpointer)&g_opt_leakwatch,
+  { "leakwatch", 0, 0, G_OPTION_ARG_NONE, (void *)&g_opt_leakwatch,
     "Enable leak watcher (warning: slows tests down by a significant ammount of time)", NULL },
   { "no-sighandle", 0, G_OPTION_FLAG_HIDDEN | G_OPTION_FLAG_REVERSE, G_OPTION_ARG_NONE, 
-    (gpointer)&g_opt_sighandle,
+    (void *)&g_opt_sighandle,
     "Don't handle signals from test", NULL },
-  { "suite", 0, 0, G_OPTION_ARG_STRING, (gpointer)&g_opt_suite,
+  { "suite", 0, 0, G_OPTION_ARG_STRING, (void *)&g_opt_suite,
     "Run only the given suite", NULL },
-  { "test-case", 0, 0, G_OPTION_ARG_STRING, (gpointer)&g_opt_test_case,
+  { "test-case", 0, 0, G_OPTION_ARG_STRING, (void *)&g_opt_test_case,
     "Run only a given test case (a suite with --suite also needs to be given)", NULL },
-  { "report", 0, 0, G_OPTION_ARG_STRING, (gpointer)&g_opt_report,
+  { "report", 0, 0, G_OPTION_ARG_STRING, (void *)&g_opt_report,
     "Use the given report module (default: print)", NULL },
-  { "no-report", 0, G_OPTION_ARG_NONE, G_OPTION_ARG_CALLBACK, (gpointer)&_tinu_opt_report_null,
+  { "no-report", 0, G_OPTION_ARG_NONE, G_OPTION_ARG_CALLBACK, (void *)&_tinu_opt_report_null,
     "Disable reporting", NULL },
 #ifdef COREDUMPER_ENABLED
-  { "core-dir", 0, 0, G_OPTION_ARG_STRING, (gpointer)&g_opt_core_dir,
+  { "core-dir", 0, 0, G_OPTION_ARG_STRING, (void *)&g_opt_core_dir,
     "Set target core directory (default: /tmp)" },
 #endif
-  { "version", 'V', 0, G_OPTION_ARG_NONE, (gpointer)&g_opt_version,
+  { "version", 'V', 0, G_OPTION_ARG_NONE, (void *)&g_opt_version,
     "Print version", NULL },
   { NULL }
 };
@@ -270,12 +270,12 @@ int
 tinu_main(int *argc, char **argv[])
 {
   FILE *log = NULL;
-  gpointer handle = NULL;
+  void *handle = NULL;
   gboolean res;
   gchar *basename = g_path_get_basename(**argv);
   ReportModule *report = NULL;
   TestStatistics *stat = NULL;
-  gpointer init_watch = log_register_message_handler(msg_stderr_handler, LOG_ERR, LOGMSG_PROPAGATE);
+  void *init_watch = log_register_message_handler(msg_stderr_handler, LOG_ERR, LOGMSG_PROPAGATE);
 
   g_runtime_name = (*argv)[0];
 
@@ -326,7 +326,7 @@ tinu_main(int *argc, char **argv[])
           log_error("Cannot open logfile", msg_tag_str("file", g_opt_file), NULL);
           return 1;
         }
-      handle = log_register_message_handler(msg_file_handler, g_opt_priority, (gpointer)log);
+      handle = log_register_message_handler(msg_file_handler, g_opt_priority, (void *)log);
     }
 
   if (g_opt_test_case && !g_opt_suite)
@@ -401,7 +401,7 @@ tinu_test_add_extended(const gchar *suite_name,
                        TestSetup setup,
                        TestCleanup cleanup,
                        TestFunction func,
-                       gpointer user_data,
+                       void *user_data,
                        CleanupFunction user_data_cleanup)
 {
   if (!g_main_test_context_init)
@@ -424,5 +424,5 @@ tinu_test_add_extended(const gchar *suite_name,
 void
 tinu_report_add(const ReportModule *module)
 {
-  g_report_modules = clist_append(g_report_modules, (gpointer)module);
+  g_report_modules = clist_append(g_report_modules, (void *)module);
 }

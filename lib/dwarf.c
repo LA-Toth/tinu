@@ -40,7 +40,7 @@
 #include <tinu/dwarf.h>
 #include <tinu/log.h>
 
-#define DWARF_ADDR_TO_GPOINTER(addr) ((gpointer)((int)(addr)))
+#define DWARF_ADDR_TO_GPOINTER(addr) ((void *)((int)(addr)))
 
 static inline void
 _dw_dwarf_error(Dwarf_Error error, Dwarf_Ptr user_data G_GNUC_UNUSED)
@@ -49,13 +49,13 @@ _dw_dwarf_error(Dwarf_Error error, Dwarf_Ptr user_data G_GNUC_UNUSED)
 }
 
 static void
-_dw_clean_unit(gpointer entry, gpointer data G_GNUC_UNUSED)
+_dw_clean_unit(void *entry, void *data G_GNUC_UNUSED)
 {
   g_free(entry);
 }
 
 static void
-_dw_clean_handle(gpointer unit, gpointer data G_GNUC_UNUSED)
+_dw_clean_handle(void *unit, void *data G_GNUC_UNUSED)
 {
   DwarfCompUnit *udata = (DwarfCompUnit *)unit;
 
@@ -250,7 +250,7 @@ dw_destroy(DwarfHandle *self)
 }
 
 const DwarfEntry *
-dw_lookup(DwarfHandle *self, gpointer ptr, guint32 tolerance)
+dw_lookup(DwarfHandle *self, void *ptr, guint32 tolerance)
 {
   GSList *act;
 

@@ -51,7 +51,7 @@ static void  (*g_leakwatch_free)(void *, const void *) = NULL;
 
 struct _Leakwatch
 {
-  gpointer        m_user_data;
+  void           *m_user_data;
   AllocCallback   m_callback;
 };
 
@@ -59,7 +59,7 @@ void _hook_pause();
 void _hook_resume();
 
 void
-_leakwatch_alert(LeakwatchOperation op, gpointer oldptr, gpointer ptr, gsize size)
+_leakwatch_alert(LeakwatchOperation op, void *oldptr, void *ptr, gsize size)
 {
   struct _Leakwatch *cb;
   Backtrace *trace = backtrace_create(4);
@@ -146,7 +146,7 @@ _hook_resume()
 }
 
 void
-_memory_entry_destroy(gpointer obj)
+_memory_entry_destroy(void *obj)
 {
   MemoryEntry *self = (MemoryEntry *)obj;
 
@@ -157,9 +157,9 @@ _memory_entry_destroy(gpointer obj)
 
 void
 _tinu_leakwatch_simple_callback(LeakwatchOperation operation,
-  gpointer oldptr, gpointer ptr, gsize size,
+  void *oldptr, void *ptr, gsize size,
   Backtrace *trace,
-  gpointer user_data)
+  void *user_data)
 {
   GHashTable *self = g_hash_table_ref((GHashTable *)user_data);
   MemoryEntry *entry, *oldentry;
@@ -214,7 +214,7 @@ _tinu_leakwatch_simple_callback(LeakwatchOperation operation,
 }
 
 void
-_tinu_leakwatch_simple_dump(gpointer key, gpointer value, gpointer user_data)
+_tinu_leakwatch_simple_dump(void *key, void *value, void *user_data)
 {
   gint priority = (gint)user_data;
   MemoryEntry *self = (MemoryEntry *)value;
@@ -276,8 +276,8 @@ _tinu_leakwatch_disable()
   g_leakwatch_count--;
 }
 
-gpointer
-tinu_register_watch(AllocCallback callback, gpointer user_data)
+void *
+tinu_register_watch(AllocCallback callback, void *user_data)
 {
   struct _Leakwatch *lw;
 
@@ -297,11 +297,11 @@ tinu_register_watch(AllocCallback callback, gpointer user_data)
   g_leakwatch_list = g_slist_prepend(g_leakwatch_list, lw);
 
   _hook_resume();
-  return (gpointer)lw;
+  return (void *)lw;
 }
 
 gboolean
-tinu_unregister_watch(gpointer handle)
+tinu_unregister_watch(void *handle)
 {
   GSList *act;
   struct _Leakwatch *lw;
@@ -339,19 +339,19 @@ tinu_unregister_watch(gpointer handle)
   return res;
 }
 
-gpointer
+void *
 tinu_leakwatch_simple(GHashTable **result)
 {
   t_assert(result);
   t_assert(*result == NULL);
 
   *result = g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, _memory_entry_destroy);
-  return tinu_register_watch(_tinu_leakwatch_simple_callback, (gpointer)*result);
+  return tinu_register_watch(_tinu_leakwatch_simple_callback, (void *)*result);
 }
 
 void
 tinu_leakwatch_simple_dump(GHashTable *result, gint loglevel)
 {
-  g_hash_table_foreach(result, _tinu_leakwatch_simple_dump, (gpointer)loglevel);
+  g_hash_table_foreach(result, _tinu_leakwatch_simple_dump, (void *)loglevel);
 }
 

@@ -54,12 +54,12 @@ __BEGIN_DECLS
  * is prepended to the list of handlers so that the newly registered one
  * gets to handle messages first.
  */
-typedef gboolean (*MessageHandler)(Message *msg, gpointer user_data);
+typedef gboolean (*MessageHandler)(Message *msg, void *user_data);
 
 /** Do not propagate messages further */
-#define LOGMSG_NO_PROPAGATE   ((gpointer)FALSE)
+#define LOGMSG_NO_PROPAGATE   ((void *)FALSE)
 /** Do propagate messages further */
-#define LOGMSG_PROPAGATE      ((gpointer)TRUE)
+#define LOGMSG_PROPAGATE      ((void *)TRUE)
 
 /** @brief syslog message handler
  *
@@ -67,28 +67,28 @@ typedef gboolean (*MessageHandler)(Message *msg, gpointer user_data);
  *
  * @note user_data should be LOGMSG_NO_PROPAGATE or LOGMSG_PROPAGATE.
  */
-gboolean msg_syslog_handler(Message *msg, gpointer user_data);
+gboolean msg_syslog_handler(Message *msg, void *user_data);
 /** @brief stderr message handler
 *
 * The messages are propagated to the standard error output
 *
 * @note user_data should be LOGMSG_NO_PROPAGATE or LOGMSG_PROPAGATE when adding handler.
 */
-gboolean msg_stderr_handler(Message *msg, gpointer user_data);
+gboolean msg_stderr_handler(Message *msg, void *user_data);
 /** @brief syslog message handler
 *
 * The messages are propagated to the standard error output using colours
 *
 * @note user_data should be LOGMSG_NO_PROPAGATE or LOGMSG_PROPAGATE when adding handler.
 */
-gboolean msg_stderr_fancy_handler(Message *msg, gpointer user_data);
+gboolean msg_stderr_fancy_handler(Message *msg, void *user_data);
 /** @brief syslog message handler
 *
 * The messages are propagated to syslog (using the standard syslog API)
 *
 * @note user_data should be LOGMSG_NO_PROPAGATE or LOGMSG_PROPAGATE when adding handler.
 */
-gboolean msg_fail_handler(Message *msg, gpointer user_data);
+gboolean msg_fail_handler(Message *msg, void *user_data);
 /** @brief file message handler
  *
  * The messages are written to a file
@@ -96,7 +96,7 @@ gboolean msg_fail_handler(Message *msg, gpointer user_data);
  * @note user_data should be a 'FILE *' pointer of the file the handler should write to.
  * @note propagates every message
  */
-gboolean msg_file_handler(Message *msg, gpointer user_data);
+gboolean msg_file_handler(Message *msg, void *user_data);
 
 /** @brief Emit message
  * @param msg Message that should be emitted
@@ -143,7 +143,7 @@ void log_clear();
  * The divert mechanism is a way to pass all messages to a different messaging
  * system (e.g. an eventlogger, a different process, etc.)
  */
-void log_divert(MessageHandler handler, gpointer user_data);
+void log_divert(MessageHandler handler, void *user_data);
 
 /** @brief Call message above given priority
  * @internal
@@ -187,14 +187,14 @@ extern gint g_log_max_priority;
  * the phrase "Maximal priority value" means the least severe value to be
  * dispatched. The lower this value is, the more messages are ignored.
  */
-gpointer log_register_message_handler(MessageHandler handler,
-  gint max_priority, gpointer user_data);
+void *log_register_message_handler(MessageHandler handler,
+  gint max_priority, void *user_data);
 /** @brief Unregister message handler
  * @param handler Handle pointer as returned by log_register_message_handler)
  *
  * Unregister the message handler
  */
-void log_unregister_message_handler(gpointer handler);
+void log_unregister_message_handler(void *handler);
 
 __END_DECLS
 

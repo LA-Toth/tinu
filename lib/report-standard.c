@@ -180,7 +180,7 @@ test_report_print(TestStatistics *stat, StatisticsVerbosity verbosity, gboolean 
 }
 
 const GOptionEntry g_report_print_module_options[] = {
-  { "stderr", 0, 0, G_OPTION_ARG_NONE, (gpointer)&g_opt_stderr,
+  { "stderr", 0, 0, G_OPTION_ARG_NONE, (void *)&g_opt_stderr,
     "Print messages to stderr instead of stderr", NULL },
   { NULL }
 };

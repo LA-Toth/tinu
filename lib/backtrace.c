@@ -102,7 +102,7 @@ struct _Backtrace
   gint                    m_refcnt;
 
   guint32                 m_length;
-  gpointer               *m_symbols;
+  void                  **m_symbols;
 };
 
 struct _DumpLogUserData
@@ -112,7 +112,7 @@ struct _DumpLogUserData
 };
 
 static BacktraceEntry *
-_backtrace_resolve_info(const gpointer addr)
+_backtrace_resolve_info(const void *addr)
 {
   Dl_info info;
   BacktraceEntry *res = NULL;
@@ -136,7 +136,7 @@ _backtrace_resolve_info(const gpointer addr)
 }
 
 static void
-_backtrace_dump_log_callback(const BacktraceEntry *entry, gpointer user_data)
+_backtrace_dump_log_callback(const BacktraceEntry *entry, void *user_data)
 {
   struct _DumpLogUserData *self = (struct _DumpLogUserData *)user_data;
   const gchar *src = NULL;
@@ -166,7 +166,7 @@ struct _DumpFileUserData
 };
 
 static void
-_backtrace_dump_file_callback(const BacktraceEntry *entry, gpointer user_data)
+_backtrace_dump_file_callback(const BacktraceEntry *entry, void *user_data)
 {
   struct _DumpFileUserData *self = (struct _DumpFileUserData *)user_data;
 
@@ -197,7 +197,7 @@ backtrace_create(guint32 skip)
 Backtrace *
 backtrace_create_depth(guint32 depth, guint32 skip)
 {
-  gpointer buffer[MAX_DEPTH + 1];
+  void *buffer[MAX_DEPTH + 1];
   guint32 nptr;
   Backtrace *res;
 
@@ -235,8 +235,8 @@ backtrace_create_depth(guint32 depth, guint32 skip)
   res = t_new(Backtrace, 1);
   res->m_refcnt = 1;
   res->m_length = nptr - skip;
-  res->m_symbols = g_new0(gpointer, nptr - skip);
-  memcpy(res->m_symbols, buffer + skip, (nptr - skip) * sizeof(gpointer));
+  res->m_symbols = g_new0(void *, nptr - skip);
+  memcpy(res->m_symbols, buffer + skip, (nptr - skip) * sizeof(void *));
 
   return res;
 }

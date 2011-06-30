@@ -74,7 +74,7 @@ MessageTag *msg_tag_hex(const gchar *tag, guint value);
 MessageTag *msg_tag_ptr(const gchar *tag, const void *ptr);
 MessageTag *msg_tag_bool(const gchar *tag, gboolean value);
 MessageTag *msg_tag_errno();
-MessageTag *msg_tag_dump(const gchar *tag, const gpointer data, gsize len);
+MessageTag *msg_tag_dump(const gchar *tag, const void *data, gsize len);
 MessageTag *msg_tag_gerror(GError *error);
 
 MessageTag *msg_tag_vprintf(const gchar *tag, const gchar *fmt, va_list vl);

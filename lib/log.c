@@ -46,13 +46,13 @@ gint g_log_max_priority = -1;
 static struct 
 {
   MessageHandler    m_divert_handler;
-  gpointer          m_user_data;
+  void             *m_user_data;
 } g_log_diverted = { NULL, NULL };
 
 struct _LogHandler
 {
   gint            m_max_priority;
-  gpointer        m_user_data;
+  void           *m_user_data;
   MessageHandler  m_handler;
 };
 
@@ -72,8 +72,8 @@ _log_alert_handlers(Message *msg)
     }
 }
 
-gpointer
-log_register_message_handler(MessageHandler handler, gint max_priority, gpointer user_data)
+void *
+log_register_message_handler(MessageHandler handler, gint max_priority, void *user_data)
 {
   struct _LogHandler *self;
 
@@ -91,11 +91,11 @@ log_register_message_handler(MessageHandler handler, gint max_priority, gpointer
 
   g_log_list = g_slist_prepend(g_log_list, self);
 
-  return (gpointer)self;
+  return (void *)self;
 }
 
 void
-log_unregister_message_handler(gpointer handler)
+log_unregister_message_handler(void *handler)
 {
   GSList *act, *next;
 
@@ -124,7 +124,7 @@ log_unregister_message_handler(gpointer handler)
 }
 
 gboolean
-msg_syslog_handler(Message *msg, gpointer user_data)
+msg_syslog_handler(Message *msg, void *user_data)
 {
   gchar *buffer = msg_format_simple(msg);
   syslog(msg->m_priority, "%s", buffer);
@@ -133,14 +133,14 @@ msg_syslog_handler(Message *msg, gpointer user_data)
 }
 
 gboolean
-msg_stderr_handler(Message *msg, gpointer user_data)
+msg_stderr_handler(Message *msg, void *user_data)
 {
-  msg_file_handler(msg, (gpointer)stderr);
+  msg_file_handler(msg, (void *)stderr);
   return (gboolean)user_data;
 }
 
 gboolean
-msg_stderr_fancy_handler(Message *msg, gpointer user_data)
+msg_stderr_fancy_handler(Message *msg, void *user_data)
 {
   const gchar *color;
   gint i;
@@ -184,7 +184,7 @@ msg_stderr_fancy_handler(Message *msg, gpointer user_data)
 }
 
 gboolean
-msg_fail_handler(Message *msg, gpointer user_data)
+msg_fail_handler(Message *msg, void *user_data)
 {
   if (msg->m_priority <= (gint)user_data)
     abort();
@@ -192,7 +192,7 @@ msg_fail_handler(Message *msg, gpointer user_data)
 }
 
 gboolean
-msg_file_handler(Message *msg, gpointer user_data)
+msg_file_handler(Message *msg, void *user_data)
 {
   gchar *buffer = msg_format_simple(msg);
   fprintf((FILE *)user_data, "[%s] %s\n", msg_format_priority(msg->m_priority), buffer);
@@ -282,7 +282,7 @@ log_clear()
 }
 
 void
-log_divert(MessageHandler handler, gpointer user_data)
+log_divert(MessageHandler handler, void *user_data)
 {
   log_clear();
 

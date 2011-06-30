@@ -52,9 +52,9 @@ __BEGIN_DECLS
 
 #define t_free(ptr) __free(ptr)
 
-gpointer __allocate(gsize size);
-gpointer __reallocate(gpointer ptr, gsize size);
-void     __free(gpointer ptr);
+void *__allocate(gsize size);
+void *__reallocate(void *ptr, gsize size);
+void  __free(void *ptr);
 
 #define _strdup(str) ((str) ? strdup(str) : NULL)
 

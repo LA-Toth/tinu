@@ -11,7 +11,7 @@ public:
   {}
 
 protected:
-  virtual void notify_alloc(gpointer result, gsize size, const CxxBacktrace &trace)
+  virtual void notify_alloc(void *result, gsize size, const CxxBacktrace &trace)
   {
     log_info("Memory allocation event",
              msg_tag_ptr("result", result),
@@ -19,7 +19,7 @@ protected:
              msg_tag_trace("trace", trace.obj()), NULL);
   }
 
-  void notify_realloc(gpointer source, gpointer result, gsize size, const CxxBacktrace &trace)
+  void notify_realloc(void *source, void *result, gsize size, const CxxBacktrace &trace)
   {
     log_info("Memory reallocation event",
              msg_tag_ptr("source", source),
@@ -28,7 +28,7 @@ protected:
              msg_tag_trace("trace", trace.obj()), NULL);
   }
 
-  void notify_free(gpointer pointer, const CxxBacktrace &trace)
+  void notify_free(void *pointer, const CxxBacktrace &trace)
   {
     log_info("Memory free event",
              msg_tag_ptr("pointer", pointer),

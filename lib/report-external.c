@@ -186,10 +186,10 @@ test_report_program(TestStatistics *stat, StatisticsVerbosity verbosity, gboolea
 }
 
 const GOptionEntry g_report_program_module_options[] = {
-  { "program", 0, 0, G_OPTION_ARG_STRING, (gpointer)&g_opt_program_name,
+  { "program", 0, 0, G_OPTION_ARG_STRING, (void *)&g_opt_program_name,
     "The program to pass the statistics to. The file name is passed as an argument to the program. "
     "To pass extra options, use program-template.", NULL },
-  { "program-template", 'T', 0, G_OPTION_ARG_STRING, (gpointer)&g_opt_program_template,
+  { "program-template", 'T', 0, G_OPTION_ARG_STRING, (void *)&g_opt_program_template,
     "Use a program template. All occurrences of %s are replaced with the filename "
     "of the statistics (default 'cat %s')", NULL },
   { NULL }
@@ -234,7 +234,7 @@ test_report_file(TestStatistics *stat, StatisticsVerbosity verbosity, gboolean e
 }
 
 const GOptionEntry g_report_file_module_options[] = {
-  { "file-destination", 0, 0, G_OPTION_ARG_STRING, (gpointer)&g_opt_filename,
+  { "file-destination", 0, 0, G_OPTION_ARG_STRING, (void *)&g_opt_filename,
     "Destination file", NULL },
   { NULL }
 };

@@ -54,30 +54,30 @@ typedef struct _TestContext TestContext;
 
 /** @brief Generic cleanup function
  */
-typedef void (*CleanupFunction)(gpointer);
+typedef void (*CleanupFunction)(void *);
 
 /** @brief Setup function
  * The result is the _context_ of the test, meaning that it will be passed to
  * the test and later cleaned up. The rationale behind this is that the same
  * dataset can be prepared and cleaned up for different tests.
  */
-typedef gpointer (*TestSetup)(TestCase *);
+typedef void *(*TestSetup)(TestCase *);
 /** @brief Cleanup function
  * This function is used to clean up the previously prepared context. You should
  * free the allocated memory if neccessary.
  */
-typedef void (*TestCleanup)(TestCase *, gpointer);
+typedef void (*TestCleanup)(TestCase *, void *);
 /** @brief Test function
  * TestFunction is the main body of the test case. Generaly speaking it should be
  * independent of the preparation/cleanup (i.e. it should work independently of the 
  * actual initialization as much as possible).
  */
-typedef void (*TestFunction)(TestCase *, gpointer);
+typedef void (*TestFunction)(TestCase *, void *);
 
 /** @brief Simplified setup function
  * @see TestSetup
  */
-typedef gpointer (*TestSetupSimple)(void);
+typedef void *(*TestSetupSimple)(void);
 /** @brief Simplified cleanup function
  * @see TestCleanup
  */
@@ -85,7 +85,7 @@ typedef CleanupFunction TestCleanupSimple;
 /** @brief Simplified test function
  * @see TestFunction
  */
-typedef void (*TestFunctionSimple)(gpointer);
+typedef void (*TestFunctionSimple)(void *);
 
 /**
  * Signifies the result of a given test case and suite.
@@ -135,7 +135,7 @@ typedef enum
   TEST_HOOK_ALL = 0xFFFF,
 } TestHookID;
 
-typedef void (*TestHookCb)(TestHookID hook_id, TestContext *context, gpointer user_data, va_list vl);
+typedef void (*TestHookCb)(TestHookID hook_id, TestContext *context, void *user_data, va_list vl);
 
 /** @brief Individual test case
  *
@@ -159,7 +159,7 @@ struct _TestCase
   TestFunction    m_test;
 
   /** User data that can be set by test_add_extended */
-  gpointer        m_user_data;
+  void           *m_user_data;
 
   /** Cleanup function for user data */
   CleanupFunction m_user_data_cleanup;
@@ -194,7 +194,7 @@ typedef struct _TestHookEntry
   TestHookCb      m_hook;
 
   /** Hook callback user data */
-  gpointer        m_user_data;
+  void           *m_user_data;
 } TestHookEntry;
 
 /** @brief Test context
@@ -284,7 +284,7 @@ void test_add_extended(TestContext *self,
                        TestSetup setup,
                        TestCleanup cleanup,
                        TestFunction func,
-                       gpointer user_data,
+                       void *user_data,
                        CleanupFunction user_data_cleanup);
 
 /** @brief Register a hook in the test context
@@ -297,7 +297,7 @@ void test_add_extended(TestContext *self,
  * the test/suite execution.
  */
 void test_register_hook(TestContext *self, TestHookID hook_id,
-  TestHookCb hook, gpointer user_data);
+  TestHookCb hook, void *user_data);
 
 /** @brief Register multiple hooks with the same user data
  * @param self Test context
@@ -310,7 +310,7 @@ void test_register_hook(TestContext *self, TestHookID hook_id,
  *
  * @note Use this for `hook' modules
  */
-void test_register_multiple_hooks(TestContext *self, TestHookCb *hooks, gpointer user_data);
+void test_register_multiple_hooks(TestContext *self, TestHookCb *hooks, void *user_data);
 
 /** @brief Unregister hook from the test context
  * @param self Test context
@@ -320,7 +320,7 @@ void test_register_multiple_hooks(TestContext *self, TestHookCb *hooks, gpointer
  *
  * Unregisters a hook from the test context.
  */
-void test_unregister_hook(TestContext *self, TestHookID hook_id, TestHookCb hook, gpointer user_data);
+void test_unregister_hook(TestContext *self, TestHookID hook_id, TestHookCb hook, void *user_data);
 
 /** @brief Unregister multiple hooks with the same user data
  * @param self Test context
@@ -333,7 +333,7 @@ void test_unregister_hook(TestContext *self, TestHookID hook_id, TestHookCb hook
  *
  * @note Use this for `hook' modules
  */
-void test_unregister_multiple_hooks(TestContext *self, TestHookCb *hooks, gpointer user_data);
+void test_unregister_multiple_hooks(TestContext *self, TestHookCb *hooks, void *user_data);
 
 /** @brief Run all tests
  * @param self Test context

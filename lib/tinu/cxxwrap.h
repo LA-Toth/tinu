@@ -124,21 +124,21 @@ private:
 class CxxLeakwatch
 {
   friend void cxx_leakwatch_callback(LeakwatchOperation operation,
-                                     gpointer oldptr, gpointer ptr, gsize size,
+                                     void *oldptr, void *ptr, gsize size,
                                      Backtrace *trace,
-                                     gpointer user_data);
+                                     void *user_data);
 
 public:
   CxxLeakwatch();
   virtual ~CxxLeakwatch();
 
 protected:
-  virtual void notify_alloc(gpointer result, gsize size, const CxxBacktrace &trace) = 0;
-  virtual void notify_realloc(gpointer source, gpointer result, gsize size, const CxxBacktrace &trace) = 0;
-  virtual void notify_free(gpointer pointer, const CxxBacktrace &trace) = 0;
+  virtual void notify_alloc(void *result, gsize size, const CxxBacktrace &trace) = 0;
+  virtual void notify_realloc(void *source, void *result, gsize size, const CxxBacktrace &trace) = 0;
+  virtual void notify_free(void *pointer, const CxxBacktrace &trace) = 0;
 
 private:
-  gpointer m_handle;
+  void *m_handle;
 };
 
 /* Message */
@@ -183,7 +183,7 @@ private:
 
 class CxxMessageHandler
 {
-  friend gboolean cxx_log_callback(Message *msg, gpointer user_data);
+  friend gboolean cxx_log_callback(Message *msg, void *user_data);
 
 public:
   CxxMessageHandler(gint max_priority);
@@ -193,7 +193,7 @@ protected:
   virtual bool notify(const CxxMessage &msg) = 0;
 
 private:
-  gpointer m_handle;
+  void *m_handle;
 };
 
 /* Tinu main */
@@ -213,7 +213,7 @@ public:
                            test_setup_wrapper<T_test>,              /* Extended setup */
                            test_cleanup_wrapper<T_test>,            /* Extended cleanup */
                            test_wrapper<T_test>,                    /* Extended test case */
-                           reinterpret_cast< gpointer >(ud),        /* Case wrapper */
+                           reinterpret_cast< void *>(ud),           /* Case wrapper */
                            &Wrapper< T_test >::destroy);            /* User data */
   }
 
@@ -225,13 +225,13 @@ public:
 
 private:
   template < class T_test >
-  static gpointer test_setup_wrapper(TestCase *test)
+  static void *test_setup_wrapper(TestCase *test)
   {
-    return (gpointer)new T_test;
+    return (void *)new T_test;
   }
 
   template < class T_test >
-  static void test_wrapper(TestCase *test, gpointer context)
+  static void test_wrapper(TestCase *test, void *context)
   {
     typedef void (T_test::*TestCase)(void);
     T_test *testobj = reinterpret_cast< T_test * >(context);
@@ -258,7 +258,7 @@ private:
   }
 
   template < class T_test >
-  static void test_cleanup_wrapper(TestCase *test, gpointer context)
+  static void test_cleanup_wrapper(TestCase *test, void *context)
   {
     T_test *testobj = reinterpret_cast< T_test * >(context);
     delete testobj;
@@ -286,7 +286,7 @@ private:
       (obj->*m_case)();
     }
 
-    static void destroy(gpointer user_data)
+    static void destroy(void *user_data)
     {
       Wrapper< T_test > *obj = reinterpret_cast< Wrapper< T_test > * >(user_data);
       delete obj;

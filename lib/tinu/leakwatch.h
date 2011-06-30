@@ -45,24 +45,24 @@ typedef enum
 } LeakwatchOperation;
 
 typedef void (*AllocCallback)(LeakwatchOperation operation,
-                              gpointer oldptr, gpointer ptr, gsize size,
+                              void *oldptr, void *ptr, gsize size,
                               Backtrace *trace,
-                              gpointer user_data);
+                              void *user_data);
 
-gpointer tinu_register_watch(AllocCallback callback, gpointer user_data);
-gboolean tinu_unregister_watch(gpointer handle);
+void *tinu_register_watch(AllocCallback callback, void *user_data);
+gboolean tinu_unregister_watch(void *handle);
 
 typedef struct _MemoryEntry
 {
-  gpointer      m_ptr;
+  void         *m_ptr;
   gsize         m_size;
 
   Backtrace    *m_origin;
   Backtrace    *m_last;
 } MemoryEntry;
 
-/* The hash table has gpointers as keys and 'struct _MemoryEntry's as values */
-gpointer tinu_leakwatch_simple(GHashTable **result);
+/* The hash table has void *s as keys and 'struct _MemoryEntry's as values */
+void *tinu_leakwatch_simple(GHashTable **result);
 void tinu_leakwatch_simple_dump(GHashTable *result, gint loglevel);
 
 __END_DECLS

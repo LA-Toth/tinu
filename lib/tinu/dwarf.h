@@ -42,15 +42,15 @@ __BEGIN_DECLS
 typedef struct _DwarfEntry
 {
   GQuark        m_source;
-  gpointer      m_pointer;
+  void         *m_pointer;
   gint          m_lineno;
 } DwarfEntry;
 
 typedef struct _DwarfCompUnit
 {
   GSList       *m_entries;
-  gpointer      m_lowpc;
-  gpointer      m_highpc;
+  void         *m_lowpc;
+  void         *m_highpc;
 } DwarfCompUnit;
 
 typedef struct _DwarfHandle
@@ -62,7 +62,7 @@ typedef struct _DwarfHandle
 DwarfHandle *dw_new(const gchar *name);
 void dw_destroy(DwarfHandle *self);
 
-const DwarfEntry *dw_lookup(DwarfHandle *self, gpointer ptr, guint32 tolerance);
+const DwarfEntry *dw_lookup(DwarfHandle *self, void *ptr, guint32 tolerance);
 
 __END_DECLS
 

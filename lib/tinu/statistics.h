@@ -91,7 +91,7 @@ typedef struct _TestStatistics
   TestContext      *m_context;
 
   /** Registered log handle */
-  gpointer          m_log_handle;
+  void             *m_log_handle;
 
   StatTestInfo     *m_test_current;
   StatSuiteInfo    *m_suite_current;
