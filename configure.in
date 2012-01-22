@@ -1,4 +1,5 @@
 AC_INIT(tinu, [0.1b], [https://tracker.bteam.hu/projects/tinu])
+AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE(tinu, [0.1b], [https://tracker.bteam.hu/projects/tinu])
 AC_CONFIG_SRCDIR([lib/tinu.h])
 
@@ -100,6 +101,11 @@ fi
 AM_CONDITIONAL(CXXWRAPPER, test x$enable_cxxwrapper != xno)
 if test x$enable_cxxwrapper != xno; then
   AC_DEFINE(CXXWRAPPER_ENABLED, 1, [cxx wrapper enabled])
+fi
+
+AM_CONDITIONAL(LINUX, test "x${target_os:0:5}" = "xlinux")
+if test "x${target_os:0:5}" = "xLinux"; then
+  AC_DEFINE(ISLINUX, 1, [target os is linux])
 fi
 
 if test -d .git; then
