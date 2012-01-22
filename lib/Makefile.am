@@ -5,7 +5,6 @@ pkglibdir = $(prefix)/lib
 rootinclude_HEADERS = tinu.h
 include_HEADERS = tinu/backtrace.h \
                   tinu/config.h \
-                  tinu/leakwatch.h \
                   tinu/log.h \
                   tinu/main.h \
                   tinu/message.h \
@@ -18,7 +17,6 @@ include_HEADERS = tinu/backtrace.h \
 
 lib_LTLIBRARIES = libtinu.la
 libtinu_la_SOURCES = backtrace.c \
-                     leakwatch.c \
                      log.c \
                      main.c \
                      message.c \
@@ -40,6 +38,11 @@ if COREDUMPER
 libtinu_la_CFLAGS += -I../coredumper
 libtinu_la_LDFLAGS += ../coredumper/libcoredumper.la
 endif
+endif
+
+if LINUX
+libtinu_la_SOURCES += leakwatch.c
+include_HEADERS += tinu/leakwatch.h
 endif
 
 if CXXWRAPPER
